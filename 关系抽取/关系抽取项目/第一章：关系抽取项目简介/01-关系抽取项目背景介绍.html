@@ -1,0 +1,845 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../img/AI.jpg">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
+    
+    
+      
+        <title>1.1 项目背景介绍 - 泛娱乐数据关系抽取项目</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.975780f9.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.2505c338.min.css">
+        
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="None" data-md-color-accent="None">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="泛娱乐数据关系抽取项目" class="md-header__button md-logo" aria-label="泛娱乐数据关系抽取项目" data-md-component="logo">
+      
+  <img src="../img/AI.jpg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            泛娱乐数据关系抽取项目
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              1.1 项目背景介绍
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="泛娱乐数据关系抽取项目" class="md-nav__button md-logo" aria-label="泛娱乐数据关系抽取项目" data-md-component="logo">
+      
+  <img src="../img/AI.jpg" alt="logo">
+
+    </a>
+    泛娱乐数据关系抽取项目
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          第一章:关系抽取项目简介
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第一章:关系抽取项目简介" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          第一章:关系抽取项目简介
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          1.1 项目背景介绍
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="01-%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96%E9%A1%B9%E7%9B%AE%E8%83%8C%E6%99%AF%E4%BB%8B%E7%BB%8D.html" class="md-nav__link md-nav__link--active">
+        1.1 项目背景介绍
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    学习目标
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    娱乐数据关系抽取项目背景
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    关系抽取业务其他应用场景
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    小结总结
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="02-%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        1.2 关系抽取的基本知识
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          第二章:基于规则方式实现关系抽取
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第二章:基于规则方式实现关系抽取" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          第二章:基于规则方式实现关系抽取
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8E%E8%A7%84%E5%88%99%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/01-%E8%A7%84%E5%88%99%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        2.1 关系抽取的规则方法介绍
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          第三章:基于pipeline方式实现关系抽取
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第三章:基于pipeline方式实现关系抽取" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          第三章:基于pipeline方式实现关系抽取
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8Epipeline%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/01-pipeline%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        3.1 关系抽取的pipeline方法介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8Epipeline%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/02-BiLSTM%2BAttention%E6%A8%A1%E5%9E%8B%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        3.2 BiLSTM+Attention模型架构解析
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8Epipeline%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/03-BILSTM%2BAttention%E6%A8%A1%E5%9E%8B%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86.html" class="md-nav__link">
+        3.3 BiLSTM+Attention模型的数据预处理
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8Epipeline%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/04-BILSTM%2BAttention%E6%A8%A1%E5%9E%8B%E5%AE%9E%E7%8E%B0%E4%B8%8E%E8%AE%AD%E7%BB%83.html" class="md-nav__link">
+        3.4 BiLSTM+Attention模型的搭建与训练
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          第四章:基于joint方式实现关系抽取
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第四章:基于joint方式实现关系抽取" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          第四章:基于joint方式实现关系抽取
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E5%9B%9B%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8Ejoint%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/01-joint%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        4.1 关系抽取的joint方法介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E5%9B%9B%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8Ejoint%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/02-Casrel%E6%A8%A1%E5%9E%8B%E6%9E%B6%E6%9E%84.html" class="md-nav__link">
+        4.2 Casrel模型架构解析
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E5%9B%9B%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8Ejoint%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/03-Casrel%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        4.3 Casrel模型的数据处理
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E5%9B%9B%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8Ejoint%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/04-Casrel%E6%A8%A1%E5%9E%8B%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%E4%B8%8E%E8%AE%AD%E7%BB%83.html" class="md-nav__link">
+        4.4 Casrel模型搭建与训练
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          第五章:模型的部署与总结
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第五章:模型的部署与总结" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          第五章:模型的部署与总结
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%BA%94%E7%AB%A0%EF%BC%9A%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%83%A8%E7%BD%B2%E4%B8%8E%E6%80%BB%E7%BB%93/01-%E6%A8%A1%E5%9E%8BAPI%E6%8E%A5%E5%8F%A3%E5%AE%9E%E7%8E%B0.html" class="md-nav__link">
+        5.1 模型API接口实现
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%BA%94%E7%AB%A0%EF%BC%9A%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%83%A8%E7%BD%B2%E4%B8%8E%E6%80%BB%E7%BB%93/02-Neo4j%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        5.2 Neo4j图数据库的介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%BA%94%E7%AB%A0%EF%BC%9A%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%83%A8%E7%BD%B2%E4%B8%8E%E6%80%BB%E7%BB%93/03-%E5%9F%BA%E4%BA%8ENeo4j%E5%AE%9E%E7%8E%B0%E5%A8%B1%E4%B9%90%E6%95%B0%E6%8D%AE%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E6%90%AD%E5%BB%BA.html" class="md-nav__link">
+        5.3 娱乐数据知识图谱搭建
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    学习目标
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    娱乐数据关系抽取项目背景
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    关系抽取业务其他应用场景
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    小结总结
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="_1">关系抽取项目背景介绍<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<hr />
+<h3 id="_2">学习目标<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<ul>
+<li>理解娱乐数据关系抽取项目的开发背景.</li>
+<li>了解关系抽取技术在企业中其他实际应用场景</li>
+</ul>
+<h3 id="_3">娱乐数据关系抽取项目背景<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<ul>
+<li>关系抽取是一种技术，旨在从文本数据中自动识别和提取出不同实体之间的关系. 在娱乐业中，这种技术通常被用于社交媒体分析. </li>
+<li>在社交媒体分析中，社交媒体平台上的用户经常会谈论不同的娱乐明星、电影、音乐和电视节目，通过使用关系抽取技术，可以帮助用户了解不同实体之间的关系，例如明星之间的合作、电影之间的相似性等等. 这些信息可以被用于市场调研、竞品分析、广告投放等多个方面. 同时，关系抽取技术还可以帮助用户快速地了解社交媒体上的热点话题和事件，并进行更加精准的舆情分析和预测. </li>
+</ul>
+<div align=center><img src="../img/yule_01.png" style="zoom:60%" ><img/></div>
+
+<hr />
+<ul>
+<li>在正式介绍娱乐数据关系抽取之前，我们需要了解一下知识图谱 (Knowledge Graph) 的概念，因为关系抽取本质属于搭建知识图谱的关键技术之一，而知识图谱也是实体关系的一种展现形式. 因此，需要对知识图谱相关知识有一定的了解和认知. </li>
+</ul>
+<ul>
+<li>其实，知识图谱这一概念最早由谷歌提出，初衷是为了让机器具备推理的能力，让它去“理解”语义层面，提供更好的查询. 近年来, 随着知识图谱技术的发展，已被广泛应用于智能搜索、智能问答、个性化推荐、人力资源管理等领域. </li>
+</ul>
+<hr />
+<ul>
+<li>什么是知识图谱呢？<ul>
+<li>在这里我们分开讨论一下什么是知识，什么是图谱. </li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li>什么是知识？<ul>
+<li>知识是人类在实践中认识客观世界的成果，它包括事实、信息、描述以及在教育和实践中获得的技能. 知识是人类从各个途径中获得的经过提升、总结与凝炼的系统的认识. </li>
+<li>举一个简单的例子: 226.1厘米，229厘米，都是客观存在的单独数据. 此时，数据不具有任何意义，仅表达一个客观表达事实. 而如果我们说"姚明的臂展为226.1厘米"、"姚明的身高是229厘米"则称为是事实型的陈述，属于信息的范畴. 那么所谓知识，就是对信息层面的抽象和归纳，如果我们把姚明的身高、臂展，及其他属性整合起来, 就得到了对于姚明的一个认知, 进一步可以了解到姚明的身高比普通人要高. </li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li>
+<p>什么是图谱</p>
+<ul>
+<li>图谱的英文是Graph，直译过来就是“图”的意思. 在图论（数学的一个研究分支）中，图表示一些事物与另一些事物之间相互连接的结构. </li>
+<li>图通常由节点（Vertex）和边（Edge）来构成，多关系图一般包含多种类型的节点和多种类型的边. 实体（节点）指的是现实世界中的事物比如人、地名、公司等，关系（边）则用来表达不同实体之间的某种联系，比如张三-“出生于”-上海、小明和小红是“朋友”等等. 下面是个非常简单的图，它由4个节点和5条边组成.</li>
+</ul>
+<div align=center><img src="../img/1-1-1.png" style="zoom:50%" ><img/></div>
+
+</li>
+</ul>
+<hr />
+<ul>
+<li>从字面上看，知识图谱就是用图的形式将知识表示出来. 图中的结点代表语义实体或概念，边代表结点间的各种语义关系. </li>
+</ul>
+<ul>
+<li>如果我们将上述姚明的一些基本信息用计算机所能理解的语言表示出来，那么我们可以构建一个简单的知识图谱来实现. 比如，&lt;姚明，职业，篮球运动员&gt;表示姚明的职业是篮球运动员，其中“姚明”和“篮球运动员”是两个节点 (即实体)，而节点间边(即关系)是“职业”. 这是一种常用的基于符号的知识表示方式——资源描述框架（Resource Description Framework，RDF），它把知识表示为一个包含主语（Subject）、谓语（Predicate）和宾语（Object）的三元组<S,P,O>. </li>
+</ul>
+<ul>
+<li>从上述内容描述我们可以总结出，构建知识图谱的关键技术环节之一（或者说不可或缺的环节之一）就是实现关系抽取. 因此，如何从文本中实现关系抽取也成为众多学者或企业研究的热点问题. </li>
+</ul>
+<hr />
+<hr />
+<h3 id="_4">关系抽取业务其他应用场景<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
+<ul>
+<li>关系抽取技术已发展多年，相关产业也日趋成熟，下面是几种主要的信息抽取产业应用：</li>
+</ul>
+<hr />
+<ul>
+<li>商业信息抽取：通过开发专门的关系抽取系统，分析各渠道收集的商业信息大数据，抽取诸如有关公司工商信息、舆情现状、风险监控等信息，提供决策支持信息. <ul>
+<li>下图为：**公司利用全量工商股权数据，结合《大额风险暴露管理办法》关联客户识别方法进行建模，抽取企业间的股权投资关系，分析企业集团派系. </li>
+</ul>
+</li>
+</ul>
+<div align=center><img src="../img/1-1-2.png" style="zoom:45%" ><img/></div>
+
+<hr />
+<ul>
+<li>医疗信息抽取：医疗保健机构以及健康保险部门可以利用关系抽取技术，获取病人的症状、诊断情况、化验结果以及治疗情况，以便更好地提供医疗服务和保险服务. <ul>
+<li>下图是**公司根据互联网公开的新冠感染人员出现的时间、场所、乘坐交通工具等信息，形成的新冠流行病学图谱. 基本应用：可以助力对流行病调查、溯源、密切接触者追踪，为医护人员和疾病防控人员提供技术支持，加速流行病调查研究. </li>
+</ul>
+</li>
+</ul>
+<div align=center><img src="../img/1-1-3.png" style="zoom:45%" ><img/></div>
+
+<hr />
+<ul>
+<li>政务信息抽取：政务部门利用信息抽取系统，获取众多的政务文件中的有效信息，使政务服务更加的准确、高效. <ul>
+<li>下图是***公司和政府合作，结合政府机关提供的日常工作和生产过程中产生的各种数据（去敏），构建了政务知识图谱，一方面实现海量政务数据自动化分析监测的手段，另一方面可以提高政务人员工作的效率. </li>
+</ul>
+</li>
+</ul>
+<div align=center><img src="../img/1-1-4.png" style="zoom:45%" ><img/></div>
+
+<hr />
+<hr />
+<h3 id="_5">小结总结<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
+<ul>
+<li>本小节主要介绍关系抽取的项目背景，是属于知识图谱构建的关键技术之一，也是目前很多企业应用的信息抽取手段之一. </li>
+<li>对关系抽取实际业务应用场景进行了简单介绍，涉及行业各方面，因此也是我们需要掌握的NLP基本技术之一. </li>
+</ul>
+<hr />
+<hr />
+<hr />
+<hr />
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="页脚" >
+      
+      
+        
+        <a href="02-%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86%E4%BB%8B%E7%BB%8D.html" class="md-footer__link md-footer__link--next" aria-label="下一页: 1.2 关系抽取的基本知识" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              1.2 关系抽取的基本知识
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\s\\-\uff0c\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.5a2dcb6a.min.js"></script>
+      
+        <script src="../js/extra.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+    
+    
+  </body>
+</html>

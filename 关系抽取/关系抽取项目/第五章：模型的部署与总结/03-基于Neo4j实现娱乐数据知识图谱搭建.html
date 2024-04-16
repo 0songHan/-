@@ -1,0 +1,1105 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../img/AI.jpg">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
+    
+    
+      
+        <title>5.3 娱乐数据知识图谱搭建 - 泛娱乐数据关系抽取项目</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.975780f9.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.2505c338.min.css">
+        
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="None" data-md-color-accent="None">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#neo4j" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="泛娱乐数据关系抽取项目" class="md-header__button md-logo" aria-label="泛娱乐数据关系抽取项目" data-md-component="logo">
+      
+  <img src="../img/AI.jpg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            泛娱乐数据关系抽取项目
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              5.3 娱乐数据知识图谱搭建
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="泛娱乐数据关系抽取项目" class="md-nav__button md-logo" aria-label="泛娱乐数据关系抽取项目" data-md-component="logo">
+      
+  <img src="../img/AI.jpg" alt="logo">
+
+    </a>
+    泛娱乐数据关系抽取项目
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          第一章:关系抽取项目简介
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第一章:关系抽取项目简介" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          第一章:关系抽取项目简介
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96%E9%A1%B9%E7%9B%AE%E7%AE%80%E4%BB%8B/01-%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96%E9%A1%B9%E7%9B%AE%E8%83%8C%E6%99%AF%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        1.1 项目背景介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96%E9%A1%B9%E7%9B%AE%E7%AE%80%E4%BB%8B/02-%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        1.2 关系抽取的基本知识
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          第二章:基于规则方式实现关系抽取
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第二章:基于规则方式实现关系抽取" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          第二章:基于规则方式实现关系抽取
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8E%E8%A7%84%E5%88%99%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/01-%E8%A7%84%E5%88%99%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        2.1 关系抽取的规则方法介绍
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          第三章:基于pipeline方式实现关系抽取
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第三章:基于pipeline方式实现关系抽取" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          第三章:基于pipeline方式实现关系抽取
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8Epipeline%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/01-pipeline%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        3.1 关系抽取的pipeline方法介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8Epipeline%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/02-BiLSTM%2BAttention%E6%A8%A1%E5%9E%8B%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        3.2 BiLSTM+Attention模型架构解析
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8Epipeline%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/03-BILSTM%2BAttention%E6%A8%A1%E5%9E%8B%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86.html" class="md-nav__link">
+        3.3 BiLSTM+Attention模型的数据预处理
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8Epipeline%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/04-BILSTM%2BAttention%E6%A8%A1%E5%9E%8B%E5%AE%9E%E7%8E%B0%E4%B8%8E%E8%AE%AD%E7%BB%83.html" class="md-nav__link">
+        3.4 BiLSTM+Attention模型的搭建与训练
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          第四章:基于joint方式实现关系抽取
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第四章:基于joint方式实现关系抽取" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          第四章:基于joint方式实现关系抽取
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E5%9B%9B%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8Ejoint%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/01-joint%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        4.1 关系抽取的joint方法介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E5%9B%9B%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8Ejoint%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/02-Casrel%E6%A8%A1%E5%9E%8B%E6%9E%B6%E6%9E%84.html" class="md-nav__link">
+        4.2 Casrel模型架构解析
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E5%9B%9B%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8Ejoint%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/03-Casrel%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        4.3 Casrel模型的数据处理
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E5%9B%9B%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8Ejoint%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/04-Casrel%E6%A8%A1%E5%9E%8B%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%E4%B8%8E%E8%AE%AD%E7%BB%83.html" class="md-nav__link">
+        4.4 Casrel模型搭建与训练
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          第五章:模型的部署与总结
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第五章:模型的部署与总结" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          第五章:模型的部署与总结
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="01-%E6%A8%A1%E5%9E%8BAPI%E6%8E%A5%E5%8F%A3%E5%AE%9E%E7%8E%B0.html" class="md-nav__link">
+        5.1 模型API接口实现
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="02-Neo4j%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        5.2 Neo4j图数据库的介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          5.3 娱乐数据知识图谱搭建
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="03-%E5%9F%BA%E4%BA%8ENeo4j%E5%AE%9E%E7%8E%B0%E5%A8%B1%E4%B9%90%E6%95%B0%E6%8D%AE%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E6%90%AD%E5%BB%BA.html" class="md-nav__link md-nav__link--active">
+        5.3 娱乐数据知识图谱搭建
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#neo4j" class="md-nav__link">
+    基于Neo4j图数据库构建知识图谱
+  </a>
+  
+    <nav class="md-nav" aria-label="基于Neo4j图数据库构建知识图谱">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    学习目标
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    本项目娱乐数据知识图谱展现
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    实现娱乐数据知识图谱搭建的基本流程
+  </a>
+  
+    <nav class="md-nav" aria-label="实现娱乐数据知识图谱搭建的基本流程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    第一步 准备数据
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    第二步 编写创建节点的函数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    第三步 编写创建关系的函数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sponeo4j" class="md-nav__link">
+    第四步 将SPO数据全部导入Neo4j数据库中
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neo4j_1" class="md-nav__link">
+    第五步 Neo4j图数据库的应用
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    小节总结
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#neo4j" class="md-nav__link">
+    基于Neo4j图数据库构建知识图谱
+  </a>
+  
+    <nav class="md-nav" aria-label="基于Neo4j图数据库构建知识图谱">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    学习目标
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    本项目娱乐数据知识图谱展现
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    实现娱乐数据知识图谱搭建的基本流程
+  </a>
+  
+    <nav class="md-nav" aria-label="实现娱乐数据知识图谱搭建的基本流程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    第一步 准备数据
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    第二步 编写创建节点的函数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    第三步 编写创建关系的函数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sponeo4j" class="md-nav__link">
+    第四步 将SPO数据全部导入Neo4j数据库中
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neo4j_1" class="md-nav__link">
+    第五步 Neo4j图数据库的应用
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    小节总结
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  <h1>5.3 娱乐数据知识图谱搭建</h1>
+
+<h2 id="neo4j">基于Neo4j图数据库构建知识图谱<a class="headerlink" href="#neo4j" title="Permanent link">&para;</a></h2>
+<h3 id="_1">学习目标<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>掌握使用py2neo实现Neo4j图谱构建的方法</li>
+<li>掌握使用Neo4j图数据库进行关系逻辑查询的方法</li>
+</ul>
+<hr />
+<h3 id="_2">本项目娱乐数据知识图谱展现<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<div align=center><img src="../img/neo4j_01.png" style="zoom:65%" ><img/></div>
+
+<h3 id="_3">实现娱乐数据知识图谱搭建的基本流程<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<ul>
+<li>第一步：准备数据</li>
+<li>第二步：编写创建节点的函数</li>
+<li>第三步：编写创建关系的函数</li>
+<li>第四步：将SPO数据全部导入Neo4j数据库中</li>
+<li>第五步：Neo4j图数据库的应用</li>
+</ul>
+<hr />
+<h4 id="_4">第一步 准备数据<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
+<ul>
+<li>文件代码路径：/home/ec2-user/Casrel_RE/relationship_extract/codes/map_display.py</li>
+</ul>
+<ul>
+<li>首先导入必备工具包</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># 导入库</span>
+<span class="kn">from</span> <span class="nn">py2neo</span> <span class="kn">import</span> <span class="n">Graph</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Relationship</span>
+<span class="kn">from</span> <span class="nn">py2neo</span> <span class="kn">import</span> <span class="n">NodeMatcher</span><span class="p">,</span> <span class="n">RelationshipMatcher</span>
+<span class="c1"># 导入模型预测方法</span>
+<span class="kn">from</span> <span class="nn">predict</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">config</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">conf</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+
+<span class="c1"># 实例化图数据库</span>
+<span class="c1"># 连接neo4j数据库，输入地址、用户名、密码</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="s1">&#39;http://127.0.0.1:7474/&#39;</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;neo4j&#39;</span><span class="p">,</span> <span class="s1">&#39;12345&#39;</span><span class="p">))</span>
+
+<span class="c1"># 实例化节点查询对象</span>
+<span class="n">node_match</span> <span class="o">=</span> <span class="n">NodeMatcher</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+
+<span class="c1"># 实例化关系查询对象</span>
+<span class="n">relation_match</span> <span class="o">=</span> <span class="n">RelationshipMatcher</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<ul>
+<li>构建第一个函数get_spo()：获取实体类型以及关系类型</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># 获取实体类型以及关系类型</span>
+<span class="k">def</span> <span class="nf">get_spo</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;&#39;</span>
+<span class="sd">    函数功能描述：</span>
+<span class="sd">    1、在正常使用模型预测spo时，因为模型不能第一时间给出subject和object的类型，</span>
+<span class="sd">    因此，这里我们借助训练集中的类型即可</span>
+<span class="sd">    2、如果训练集也没有，可以根据预测关系的类别自己定义比如：出生日期，subject一般为人名，object一般为日期或时间</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">dict1</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">train_data_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fr</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fr</span><span class="o">.</span><span class="n">readlines</span><span class="p">():</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="n">spo_list</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;spo_list&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">spo</span> <span class="ow">in</span> <span class="n">spo_list</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">spo</span><span class="p">[</span><span class="s1">&#39;predicate&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dict1</span><span class="p">:</span>
+                    <span class="n">dict1</span><span class="p">[</span><span class="n">spo</span><span class="p">[</span><span class="s1">&#39;predicate&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">spo</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dict1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">18</span><span class="p">:</span>
+                <span class="k">break</span>
+    <span class="c1"># with open(&#39;rel_type.json&#39;, &#39;a&#39;, encoding=&#39;utf-8&#39;) as fw:</span>
+    <span class="c1">#     fw.write(json.dumps(dict1, ensure_ascii=False, indent=4))</span>
+    <span class="k">return</span> <span class="n">dict1</span>
+</code></pre></div>
+<ul>
+<li>构建第二个函数ready_data()：准备SPO数据（附带主、客实体类型、关系类型）</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># 根据模型预测spo,准备数据</span>
+<span class="k">def</span> <span class="nf">ready_data</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    通过加载训练好的模型，对需要待预测关系的文本实现预测，并将预测结果存储到文件中</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># 获取包含实体和关系类型的字典</span>
+    <span class="n">type_dict</span> <span class="o">=</span> <span class="n">get_spo</span><span class="p">()</span>
+    <span class="c1"># 导入训练好的模型</span>
+    <span class="n">model_path</span> <span class="o">=</span> <span class="s1">&#39;../save_model/last_model.pth&#39;</span>
+    <span class="n">mymodel</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span>
+    <span class="c1"># 读取测试集文档进行预测</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">test_data_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="k">as</span> <span class="n">fr</span><span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">fr</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="c1"># print(line)</span>
+        <span class="n">sample</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="n">model2predict</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">mymodel</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">spo_list</span> <span class="o">=</span> <span class="n">outputs</span><span class="p">[</span><span class="s1">&#39;spo_list&#39;</span><span class="p">]</span>
+        <span class="c1"># print(spo_list)</span>
+        <span class="k">for</span> <span class="n">spo</span> <span class="ow">in</span> <span class="n">spo_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">spo</span><span class="p">[</span><span class="s1">&#39;predicate&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">type_dict</span><span class="p">:</span>
+                <span class="n">spo</span><span class="p">[</span><span class="s1">&#39;subject_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">type_dict</span><span class="p">[</span><span class="n">spo</span><span class="p">[</span><span class="s1">&#39;predicate&#39;</span><span class="p">]][</span><span class="s1">&#39;subject_type&#39;</span><span class="p">]</span>
+                <span class="n">spo</span><span class="p">[</span><span class="s1">&#39;object_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">type_dict</span><span class="p">[</span><span class="n">spo</span><span class="p">[</span><span class="s1">&#39;predicate&#39;</span><span class="p">]][</span><span class="s1">&#39;object_type&#39;</span><span class="p">]</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;../data/predict_spo.json&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fw</span><span class="p">:</span>
+                    <span class="n">fw</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">spo</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h4 id="_5">第二步 编写创建节点的函数<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
+<ul>
+<li>构建第三个函数create_node() ：创建节点</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># 创建节点</span>
+<span class="k">def</span> <span class="nf">create_node</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+    <span class="c1">#第一次：如果你的图数据库之前的数据是没有用的可以直接清空</span>
+    <span class="c1"># graph.delete_all()</span>
+    <span class="c1"># 构建节点的属性，如果一个节点有多个属性要同时判断，所以加上and</span>
+    <span class="n">condition</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">condition</span> <span class="o">+=</span> <span class="s1">&#39;_.</span><span class="si">%s</span><span class="s1">=&#39;</span> <span class="o">%</span> <span class="n">key</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\&quot;</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">value</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\&quot;</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s2">&quot; and &quot;</span>
+    <span class="c1"># 将condition最后的and字符去掉</span>
+    <span class="n">condition</span> <span class="o">=</span> <span class="n">condition</span><span class="p">[:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span>
+    <span class="c1"># 根据属性条件查询节点是否已经存在，若存在则返回该节点，否则返回None</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">node_match</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">label</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="c1"># 如果要创建的节点不存在则再创建</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">)</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">node</span>
+    <span class="k">return</span> <span class="kc">None</span>
+</code></pre></div>
+<hr />
+<h4 id="_6">第三步 编写创建关系的函数<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h4>
+<ul>
+<li>构建第四个函数 match_node() ：判断节点是否存在</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># 使用NodeMatcher查询节点</span>
+<span class="k">def</span> <span class="nf">match_node</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+    <span class="n">condition</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">condition</span> <span class="o">+=</span> <span class="s1">&#39;_.</span><span class="si">%s</span><span class="s1">=&#39;</span> <span class="o">%</span> <span class="n">key</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\&quot;</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">value</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\&quot;</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s2">&quot; and &quot;</span>
+    <span class="c1"># 将condition最后的 and 字符去掉(注意and前后有两个空格)</span>
+    <span class="n">condition</span> <span class="o">=</span> <span class="n">condition</span><span class="p">[:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span>
+    <span class="c1"># 根据属性条件查询节点是否已经存在，若存在则返回该节点，否则返回None。</span>
+    <span class="c1"># 注意加上.first()返回一个节点结果，不加.first()返回所有符合要求的节点结果</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">node_match</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">label</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">value</span>
+</code></pre></div>
+<ul>
+<li>构建第五个函数 create_relationship() ：创建两节点的关系</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># 建立两个节点之间的关系</span>
+<span class="k">def</span> <span class="nf">create_relationship</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">label1</span><span class="p">,</span> <span class="n">attrs1</span><span class="p">,</span> <span class="n">label2</span><span class="p">,</span> <span class="n">attrs2</span><span class="p">,</span> <span class="n">r_name</span><span class="p">):</span>
+    <span class="n">value1</span> <span class="o">=</span> <span class="n">match_node</span><span class="p">(</span><span class="n">label1</span><span class="p">,</span> <span class="n">attrs1</span><span class="p">)</span>
+    <span class="n">value2</span> <span class="o">=</span> <span class="n">match_node</span><span class="p">(</span><span class="n">label2</span><span class="p">,</span> <span class="n">attrs2</span><span class="p">)</span>
+    <span class="c1"># 判断实体是否均存在，否则无法创建关系</span>
+    <span class="k">if</span> <span class="n">value1</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">value2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="c1"># 判断是否已经创建完关系，如果已经创建就不用再重复定义了。当然这一步也可以省略，因为相同实体对创建相同关系时，结果会覆盖</span>
+    <span class="c1"># rel_value = match_relation(node1=value1, node2=value2, r_type=r_name)</span>
+    <span class="c1"># print(&quot;rel_value:{}&quot;.format(rel_value))</span>
+    <span class="c1"># if rel_value:</span>
+    <span class="c1">#     return False</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">Relationship</span><span class="p">(</span><span class="n">value1</span><span class="p">,</span> <span class="n">r_name</span><span class="p">,</span> <span class="n">value2</span><span class="p">)</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h4 id="sponeo4j">第四步 将SPO数据全部导入Neo4j数据库中<a class="headerlink" href="#sponeo4j" title="Permanent link">&para;</a></h4>
+<ul>
+<li>构建第六个函数 load_file_create_map(): 从文件中读取spo数据导入到Neo4j数据库中</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">load_file_create_map</span><span class="p">():</span>
+    <span class="c1"># 首先需要运行ready_data函数获取模型预测的spo三元组数据，这里是通过文件形式存储数据（方便反复使用）</span>
+    <span class="c1"># 第一次运行可以清空所有图数据</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">delete_all</span><span class="p">()</span>
+    <span class="c1"># 第一步获取数据</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;../data/predict_spo.json&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="k">as</span> <span class="n">fr</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">fr</span><span class="o">.</span><span class="n">readlines</span><span class="p">()):</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="c1"># todo: 定义主实体节点</span>
+            <span class="c1"># 定义主实体节点的标签</span>
+            <span class="n">subject_label</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="s2">&quot;subject_type&quot;</span><span class="p">]</span>
+            <span class="c1"># 定义主实体节点的属性</span>
+            <span class="n">sub_attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">line</span><span class="p">[</span><span class="s2">&quot;subject&quot;</span><span class="p">]}</span>
+            <span class="n">create_node</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">subject_label</span><span class="p">,</span> <span class="n">sub_attrs</span><span class="p">)</span>
+
+            <span class="c1"># todo: 定义客实体节点</span>
+            <span class="c1"># 定义客实体节点的标签</span>
+            <span class="n">object_label</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="s2">&quot;object_type&quot;</span><span class="p">]</span>
+            <span class="c1"># 定义主实体节点的属性</span>
+            <span class="k">if</span> <span class="s2">&quot;日期&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;predicate&#39;</span><span class="p">]:</span>
+                <span class="n">obj_attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">line</span><span class="p">[</span><span class="s2">&quot;object&quot;</span><span class="p">]}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">obj_attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">line</span><span class="p">[</span><span class="s2">&quot;object&quot;</span><span class="p">]}</span>
+            <span class="n">create_node</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">object_label</span><span class="p">,</span> <span class="n">obj_attrs</span><span class="p">)</span>
+
+            <span class="c1"># todo: 定义主实体和客实体之间的关系</span>
+            <span class="n">r_name</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="s2">&quot;predicate&quot;</span><span class="p">]</span>
+            <span class="n">create_relationship</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">subject_label</span><span class="p">,</span> <span class="n">sub_attrs</span><span class="p">,</span> <span class="n">object_label</span><span class="p">,</span> <span class="n">obj_attrs</span><span class="p">,</span> <span class="n">r_name</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h4 id="neo4j_1">第五步 Neo4j图数据库的应用<a class="headerlink" href="#neo4j_1" title="Permanent link">&para;</a></h4>
+<ul>
+<li>构建第七个函数 use_neo4j2search(): 使用Neo4j数据库查询</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># 查询Neo4j图数据库数据</span>
+<span class="k">def</span> <span class="nf">use_neo4j2search</span><span class="p">():</span>
+    <span class="c1"># 查询图中节点和关系类型有哪些</span>
+    <span class="n">node_labels</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">node_labels</span> <span class="c1"># 查询一共有多少种节点类型</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">F</span><span class="s2">&quot;Neo4j图数据库中存在的节点类型为：</span><span class="si">{</span><span class="n">node_labels</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">relation_types</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">relationship_types</span> <span class="c1"># 查询一共有多少种关系类型</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">F</span><span class="s2">&quot;Neo4j图数据库中存在的关系类型为：</span><span class="si">{</span><span class="n">relation_types</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># 查询节点，这里以label=&quot;人物&quot;, attrs = {&quot;name&quot;: &quot;李晨&quot;}为例</span>
+    <span class="n">node1</span> <span class="o">=</span> <span class="n">match_node</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;人物&#39;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s1">&#39;李晨&#39;</span><span class="p">})</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">node1</span><span class="p">)</span>
+    <span class="c1"># 查询关系，以上述的名字为“李晨”的节点为出发点，进行关系的查询</span>
+    <span class="c1">#eg1：查询“李晨”节点的所有关系：先查节点，再查关系，r_type=None表示任意的关系类型都可以</span>
+    <span class="n">ship_list1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">relation_match</span><span class="o">.</span><span class="n">match</span><span class="p">([</span><span class="n">node1</span><span class="p">],</span> <span class="n">r_type</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">reship</span> <span class="ow">in</span> <span class="n">ship_list1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">reship</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+    <span class="c1">#eg2：查询“李晨”和“中国”的关系：两个节点的顺序表示要匹配的关系方向，r_type=None表示任意的关系类型都可以</span>
+    <span class="n">node2</span> <span class="o">=</span> <span class="n">match_node</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;国家&#39;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s1">&#39;中国&#39;</span><span class="p">})</span>
+    <span class="n">ship_list12</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">relation_match</span><span class="o">.</span><span class="n">match</span><span class="p">([</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">],</span> <span class="n">r_type</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">reship</span> <span class="ow">in</span> <span class="n">ship_list12</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">reship</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+    <span class="c1">#eg3：查询某一类关系：第一个参数为None，第二个参数r_type=指定关系类型</span>
+    <span class="n">ship_list3</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">relation_match</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">r_type</span><span class="o">=</span><span class="s2">&quot;出生日期&quot;</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">reship</span> <span class="ow">in</span> <span class="n">ship_list3</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">reship</span><span class="p">)</span>
+        <span class="k">break</span>
+</code></pre></div>
+<ul>
+<li>返回结果</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">Neo4j图数据库中存在的节点类型为</span><span class="err">：</span><span class="nb">frozenset</span><span class="p">({</span><span class="s1">&#39;网络小说&#39;</span><span class="p">,</span> <span class="s1">&#39;人物&#39;</span><span class="p">,</span> <span class="s1">&#39;歌曲&#39;</span><span class="p">,</span> <span class="s1">&#39;影视作品&#39;</span><span class="p">,</span> <span class="s1">&#39;日期&#39;</span><span class="p">,</span> <span class="s1">&#39;地点&#39;</span><span class="p">,</span> <span class="s1">&#39;企业&#39;</span><span class="p">,</span> <span class="s1">&#39;图书作品&#39;</span><span class="p">,</span> <span class="s1">&#39;国家&#39;</span><span class="p">,</span> <span class="s1">&#39;网站&#39;</span><span class="p">,</span> <span class="s1">&#39;文本&#39;</span><span class="p">,</span> <span class="s1">&#39;出版社&#39;</span><span class="p">,</span> <span class="s1">&#39;音乐专辑&#39;</span><span class="p">,</span> <span class="s1">&#39;学校&#39;</span><span class="p">})</span>
+<span class="n">Neo4j图数据库中存在的关系类型为</span><span class="err">：</span><span class="nb">frozenset</span><span class="p">({</span><span class="s1">&#39;歌手&#39;</span><span class="p">,</span> <span class="s1">&#39;民族&#39;</span><span class="p">,</span> <span class="s1">&#39;成立日期&#39;</span><span class="p">,</span> <span class="s1">&#39;毕业院校&#39;</span><span class="p">,</span> <span class="s1">&#39;国籍&#39;</span><span class="p">,</span> <span class="s1">&#39;导演&#39;</span><span class="p">,</span> <span class="s1">&#39;上映时间&#39;</span><span class="p">,</span> <span class="s1">&#39;出品公司&#39;</span><span class="p">,</span> <span class="s1">&#39;作曲&#39;</span><span class="p">,</span> <span class="s1">&#39;所属专辑&#39;</span><span class="p">,</span> <span class="s1">&#39;主演&#39;</span><span class="p">,</span> <span class="s1">&#39;出版社&#39;</span><span class="p">,</span> <span class="s1">&#39;作者&#39;</span><span class="p">,</span> <span class="s1">&#39;出生日期&#39;</span><span class="p">,</span> <span class="s1">&#39;作词&#39;</span><span class="p">,</span> <span class="s1">&#39;连载网站&#39;</span><span class="p">,</span> <span class="s1">&#39;出生地&#39;</span><span class="p">})</span>
+<span class="p">(</span><span class="n">_268</span><span class="p">:</span><span class="n">人物</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="s1">&#39;</span><span class="se">\u674e\u6668</span><span class="s1">&#39;</span><span class="p">})</span>
+<span class="p">(</span><span class="n">李晨</span><span class="p">)</span><span class="o">-</span><span class="p">[:</span><span class="n">出生日期</span> <span class="p">{}]</span><span class="o">-&gt;</span><span class="p">(</span><span class="n">_19268</span><span class="p">)</span>
+<span class="p">(</span><span class="n">李晨</span><span class="p">)</span><span class="o">-</span><span class="p">[:</span><span class="n">出生地</span> <span class="p">{}]</span><span class="o">-&gt;</span><span class="p">(</span><span class="n">北京</span><span class="p">)</span>
+<span class="p">(</span><span class="n">李晨</span><span class="p">)</span><span class="o">-</span><span class="p">[:</span><span class="n">出生地</span> <span class="p">{}]</span><span class="o">-&gt;</span><span class="p">(</span><span class="n">湖南湘乡</span><span class="p">)</span>
+<span class="p">(</span><span class="n">李晨</span><span class="p">)</span><span class="o">-</span><span class="p">[:</span><span class="n">毕业院校</span> <span class="p">{}]</span><span class="o">-&gt;</span><span class="p">(</span><span class="n">鲁迅美术学院</span><span class="p">)</span>
+<span class="p">(</span><span class="n">李晨</span><span class="p">)</span><span class="o">-</span><span class="p">[:</span><span class="n">国籍</span> <span class="p">{}]</span><span class="o">-&gt;</span><span class="p">(</span><span class="n">中国</span><span class="p">)</span>
+<span class="o">********************************************************************************</span>
+<span class="p">(</span><span class="n">李晨</span><span class="p">)</span><span class="o">-</span><span class="p">[:</span><span class="n">国籍</span> <span class="p">{}]</span><span class="o">-&gt;</span><span class="p">(</span><span class="n">中国</span><span class="p">)</span>
+<span class="o">********************************************************************************</span>
+<span class="p">(</span><span class="n">吴亚汝</span><span class="p">)</span><span class="o">-</span><span class="p">[:</span><span class="n">出生日期</span> <span class="p">{}]</span><span class="o">-&gt;</span><span class="p">(</span><span class="n">_4271</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h3 id="_7">小节总结<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p>本小节基于 Neo4j 图数据库实现了娱乐数据知识图谱的搭建和应用</p>
+<hr />
+<hr />
+</li>
+</ul>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="页脚" >
+      
+        
+        <a href="02-Neo4j%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E4%BB%8B%E7%BB%8D.html" class="md-footer__link md-footer__link--prev" aria-label="上一页: 5.2 Neo4j图数据库的介绍" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              5.2 Neo4j图数据库的介绍
+            </div>
+          </div>
+        </a>
+      
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\s\\-\uff0c\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.5a2dcb6a.min.js"></script>
+      
+        <script src="../js/extra.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+    
+    
+  </body>
+</html>

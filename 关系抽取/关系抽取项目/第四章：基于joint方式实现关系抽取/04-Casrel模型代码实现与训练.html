@@ -1,0 +1,1385 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../img/AI.jpg">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
+    
+    
+      
+        <title>4.4 Casrel模型搭建与训练 - 泛娱乐数据关系抽取项目</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.975780f9.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.2505c338.min.css">
+        
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="None" data-md-color-accent="None">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#casrel" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="泛娱乐数据关系抽取项目" class="md-header__button md-logo" aria-label="泛娱乐数据关系抽取项目" data-md-component="logo">
+      
+  <img src="../img/AI.jpg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            泛娱乐数据关系抽取项目
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              4.4 Casrel模型搭建与训练
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="泛娱乐数据关系抽取项目" class="md-nav__button md-logo" aria-label="泛娱乐数据关系抽取项目" data-md-component="logo">
+      
+  <img src="../img/AI.jpg" alt="logo">
+
+    </a>
+    泛娱乐数据关系抽取项目
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          第一章:关系抽取项目简介
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第一章:关系抽取项目简介" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          第一章:关系抽取项目简介
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96%E9%A1%B9%E7%9B%AE%E7%AE%80%E4%BB%8B/01-%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96%E9%A1%B9%E7%9B%AE%E8%83%8C%E6%99%AF%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        1.1 项目背景介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96%E9%A1%B9%E7%9B%AE%E7%AE%80%E4%BB%8B/02-%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        1.2 关系抽取的基本知识
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          第二章:基于规则方式实现关系抽取
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第二章:基于规则方式实现关系抽取" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          第二章:基于规则方式实现关系抽取
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8E%E8%A7%84%E5%88%99%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/01-%E8%A7%84%E5%88%99%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        2.1 关系抽取的规则方法介绍
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          第三章:基于pipeline方式实现关系抽取
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第三章:基于pipeline方式实现关系抽取" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          第三章:基于pipeline方式实现关系抽取
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8Epipeline%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/01-pipeline%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        3.1 关系抽取的pipeline方法介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8Epipeline%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/02-BiLSTM%2BAttention%E6%A8%A1%E5%9E%8B%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        3.2 BiLSTM+Attention模型架构解析
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8Epipeline%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/03-BILSTM%2BAttention%E6%A8%A1%E5%9E%8B%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86.html" class="md-nav__link">
+        3.3 BiLSTM+Attention模型的数据预处理
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8Epipeline%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/04-BILSTM%2BAttention%E6%A8%A1%E5%9E%8B%E5%AE%9E%E7%8E%B0%E4%B8%8E%E8%AE%AD%E7%BB%83.html" class="md-nav__link">
+        3.4 BiLSTM+Attention模型的搭建与训练
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          第四章:基于joint方式实现关系抽取
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第四章:基于joint方式实现关系抽取" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          第四章:基于joint方式实现关系抽取
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="01-joint%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        4.1 关系抽取的joint方法介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="02-Casrel%E6%A8%A1%E5%9E%8B%E6%9E%B6%E6%9E%84.html" class="md-nav__link">
+        4.2 Casrel模型架构解析
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="03-Casrel%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        4.3 Casrel模型的数据处理
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          4.4 Casrel模型搭建与训练
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="04-Casrel%E6%A8%A1%E5%9E%8B%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%E4%B8%8E%E8%AE%AD%E7%BB%83.html" class="md-nav__link md-nav__link--active">
+        4.4 Casrel模型搭建与训练
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#casrel" class="md-nav__link">
+    Casrel关系抽取模型搭建
+  </a>
+  
+    <nav class="md-nav" aria-label="Casrel关系抽取模型搭建">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    学习目标
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#casrel_1" class="md-nav__link">
+    Casrel模型搭建
+  </a>
+  
+    <nav class="md-nav" aria-label="Casrel模型搭建">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    第一步: 编写模型类的代码
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    第二步: 编写工具类函数,训练函数,验证函数,测试函数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    第三步: 编写模型预测函数
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    小节总结
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          第五章:模型的部署与总结
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第五章:模型的部署与总结" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          第五章:模型的部署与总结
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%BA%94%E7%AB%A0%EF%BC%9A%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%83%A8%E7%BD%B2%E4%B8%8E%E6%80%BB%E7%BB%93/01-%E6%A8%A1%E5%9E%8BAPI%E6%8E%A5%E5%8F%A3%E5%AE%9E%E7%8E%B0.html" class="md-nav__link">
+        5.1 模型API接口实现
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%BA%94%E7%AB%A0%EF%BC%9A%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%83%A8%E7%BD%B2%E4%B8%8E%E6%80%BB%E7%BB%93/02-Neo4j%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        5.2 Neo4j图数据库的介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%BA%94%E7%AB%A0%EF%BC%9A%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%83%A8%E7%BD%B2%E4%B8%8E%E6%80%BB%E7%BB%93/03-%E5%9F%BA%E4%BA%8ENeo4j%E5%AE%9E%E7%8E%B0%E5%A8%B1%E4%B9%90%E6%95%B0%E6%8D%AE%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E6%90%AD%E5%BB%BA.html" class="md-nav__link">
+        5.3 娱乐数据知识图谱搭建
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#casrel" class="md-nav__link">
+    Casrel关系抽取模型搭建
+  </a>
+  
+    <nav class="md-nav" aria-label="Casrel关系抽取模型搭建">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    学习目标
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#casrel_1" class="md-nav__link">
+    Casrel模型搭建
+  </a>
+  
+    <nav class="md-nav" aria-label="Casrel模型搭建">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    第一步: 编写模型类的代码
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    第二步: 编写工具类函数,训练函数,验证函数,测试函数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    第三步: 编写模型预测函数
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    小节总结
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  <h1>4.4 Casrel模型搭建与训练</h1>
+
+<h2 id="casrel">Casrel关系抽取模型搭建<a class="headerlink" href="#casrel" title="Permanent link">&para;</a></h2>
+<hr />
+<h3 id="_1">学习目标<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>掌握基于Casrel模型搭建的代码实现.</li>
+<li>掌握模型的训练,验证,测试的代码实现.</li>
+<li>掌握使用模型预测代码的实现.</li>
+</ul>
+<hr />
+<h3 id="casrel_1">Casrel模型搭建<a class="headerlink" href="#casrel_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>本项目中Casrel模型搭建的步骤如下:<ul>
+<li>第一步: 编写模型类的代码</li>
+<li>第二步: 编写工具类函数,训练函数,验证函数,测试函数</li>
+<li>第三步: 编写使用模型预测代码的实现.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h4 id="_2">第一步: 编写模型类的代码<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h4>
+<ul>
+<li>文本编码采用的是BERT预训练模型</li>
+</ul>
+<hr />
+<ul>
+<li>第一步: 实现CasRel类代码.</li>
+<li>代码路径: /home/ec2-user/Casrel_RE/relationship_extract/codes/model/CasrelModel.py</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># coding:utf-8</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">BertModel</span><span class="p">,</span> <span class="n">AdamW</span>
+<span class="kn">from</span> <span class="nn">codes.config</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="k">class</span> <span class="nc">CasRel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conf</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bert</span> <span class="o">=</span> <span class="n">BertModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">bert_path</span><span class="p">)</span>
+        <span class="c1"># 定义第一个线性层，来判断主实体的头部位置</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sub_heads_linear</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">bert_dim</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># 定义第二个线性层，来判断主实体的尾部位置</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sub_tails_linear</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">bert_dim</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># 定义第三个线性层，来判断客实体的头部位置以及关系类型</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">obj_heads_linear</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">bert_dim</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">num_rel</span><span class="p">)</span>
+        <span class="c1"># 定义第四个线性层，来判断客实体的尾部位置以及关系类型</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">obj_tails_linear</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">bert_dim</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">num_rel</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_encoded_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token_ids</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+        <span class="n">encoded_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bert</span><span class="p">(</span><span class="n">token_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">encoded_text</span>
+
+    <span class="k">def</span> <span class="nf">get_subs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">encoded_text</span><span class="p">):</span>
+        <span class="n">pre_sub_heads</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sub_heads_linear</span><span class="p">(</span><span class="n">encoded_text</span><span class="p">))</span>
+        <span class="n">pre_sub_tails</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sub_tails_linear</span><span class="p">(</span><span class="n">encoded_text</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">pre_sub_heads</span><span class="p">,</span> <span class="n">pre_sub_tails</span>
+
+    <span class="k">def</span> <span class="nf">get_objs_for_specific_sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_head2tail</span><span class="p">,</span> <span class="n">sub_len</span><span class="p">,</span> <span class="n">encoded_text</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        将subject实体信息融合原始句子中：将主实体字向量实现平均，然后加在当前句子的每一个字向量上，进行计算</span>
+<span class="sd">        :param sub_head2tail:shape--&gt;【16，1, 200】</span>
+<span class="sd">        :param sub_len:shape---&gt;[16,1]</span>
+<span class="sd">        :param encoded_text:.shape[16，200，768]</span>
+<span class="sd">        :return:</span>
+<span class="sd">            pred_obj_heads--&gt;shape []</span>
+<span class="sd">            pre_obj_tails--&gt;shape []</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">sub</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">sub_head2tail</span><span class="p">,</span> <span class="n">encoded_text</span><span class="p">)</span><span class="c1"># 将主实体特征和编码后的文本进行融合</span>
+        <span class="n">sub_len</span> <span class="o">=</span> <span class="n">sub_len</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 主实体长度（扩维）</span>
+        <span class="n">sub</span> <span class="o">=</span> <span class="n">sub</span> <span class="o">/</span> <span class="n">sub_len</span> <span class="c1"># 平均主实体信息</span>
+        <span class="n">encoded_text</span> <span class="o">=</span> <span class="n">encoded_text</span> <span class="o">+</span> <span class="n">sub</span> <span class="c1">#将处理后的实体特征和原始编码后的文本进行融合</span>
+        <span class="n">pred_obj_heads</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj_heads_linear</span><span class="p">(</span><span class="n">encoded_text</span><span class="p">))</span>
+        <span class="n">pre_obj_tails</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj_tails_linear</span><span class="p">(</span><span class="n">encoded_text</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">pred_obj_heads</span><span class="p">,</span> <span class="n">pre_obj_tails</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_ids</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">sub_head2tail</span><span class="p">,</span> <span class="n">sub_len</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+
+<span class="sd">        :param input_ids: shape--&gt;[16, 200]</span>
+<span class="sd">        :param mask: shape--&gt;[16, 200]</span>
+<span class="sd">        :param sub_head2tail: shape--&gt;[16, 200]</span>
+<span class="sd">        :param sub_len: shape--&gt;[16, 1]</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># todo: encode_text.shape---&gt;[16,200,768]</span>
+        <span class="n">encoded_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_encoded_text</span><span class="p">(</span><span class="n">input_ids</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+        <span class="n">pred_sub_heads</span><span class="p">,</span> <span class="n">pre_sub_tails</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_subs</span><span class="p">(</span><span class="n">encoded_text</span><span class="p">)</span>
+        <span class="n">sub_head2tail</span> <span class="o">=</span> <span class="n">sub_head2tail</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">pred_obj_heads</span><span class="p">,</span> <span class="n">pre_obj_tails</span> <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_objs_for_specific_sub</span><span class="p">(</span><span class="n">sub_head2tail</span><span class="p">,</span> <span class="n">sub_len</span><span class="p">,</span><span class="n">encoded_text</span><span class="p">)</span>
+        <span class="n">result_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;pred_sub_heads&#39;</span><span class="p">:</span> <span class="n">pred_sub_heads</span><span class="p">,</span>
+                       <span class="s1">&#39;pred_sub_tails&#39;</span><span class="p">:</span> <span class="n">pre_sub_tails</span><span class="p">,</span>
+                       <span class="s1">&#39;pred_obj_heads&#39;</span><span class="p">:</span> <span class="n">pred_obj_heads</span><span class="p">,</span>
+                       <span class="s1">&#39;pred_obj_tails&#39;</span><span class="p">:</span> <span class="n">pre_obj_tails</span><span class="p">,</span>
+                       <span class="s1">&#39;mask&#39;</span><span class="p">:</span> <span class="n">mask</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">result_dict</span>
+
+    <span class="k">def</span> <span class="nf">compute_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                     <span class="n">pred_sub_heads</span><span class="p">,</span> <span class="n">pred_sub_tails</span><span class="p">,</span>
+                     <span class="n">pred_obj_heads</span><span class="p">,</span> <span class="n">pred_obj_tails</span><span class="p">,</span>
+                     <span class="n">mask</span><span class="p">,</span>
+                     <span class="n">sub_heads</span><span class="p">,</span> <span class="n">sub_tails</span><span class="p">,</span>
+                     <span class="n">obj_heads</span><span class="p">,</span> <span class="n">obj_tails</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        计算损失</span>
+<span class="sd">        :param pred_sub_heads:[16, 200, 1]</span>
+<span class="sd">        :param pred_sub_tails:[16, 200, 1]</span>
+<span class="sd">        :param pred_obj_heads:[16, 200, 18]</span>
+<span class="sd">        :param pred_obj_tails:[16, 200, 18]</span>
+<span class="sd">        :param mask: shape--&gt;[16, 200]</span>
+<span class="sd">        :param sub_heads: shape--&gt;[16, 200]</span>
+<span class="sd">        :param sub_tails: shape--&gt;[16, 200]</span>
+<span class="sd">        :param obj_heads: shape--&gt;[16, 200, 18]</span>
+<span class="sd">        :param obj_tails: shape--&gt;[16, 200, 18]</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># todo:sub_heads.shape,sub_tails.shape, mask--&gt;[16, 200]</span>
+        <span class="c1"># todo:obj_heads.shape,obj_tails.shape--&gt;[16, 200, 18]</span>
+        <span class="n">rel_count</span> <span class="o">=</span> <span class="n">obj_heads</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">rel_mask</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">rel_count</span><span class="p">)</span>
+        <span class="n">loss_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">pred_sub_heads</span><span class="p">,</span> <span class="n">sub_heads</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+        <span class="n">loss_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">pred_sub_tails</span><span class="p">,</span> <span class="n">sub_tails</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+        <span class="n">loss_3</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">pred_obj_heads</span><span class="p">,</span> <span class="n">obj_heads</span><span class="p">,</span> <span class="n">rel_mask</span><span class="p">)</span>
+        <span class="n">loss_4</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">pred_obj_tails</span><span class="p">,</span> <span class="n">obj_tails</span><span class="p">,</span> <span class="n">rel_mask</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">loss_1</span> <span class="o">+</span> <span class="n">loss_2</span> <span class="o">+</span> <span class="n">loss_3</span> <span class="o">+</span> <span class="n">loss_4</span>
+
+    <span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">gold</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="n">pred</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">los</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">BCELoss</span><span class="p">(</span><span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">)(</span><span class="n">pred</span><span class="p">,</span> <span class="n">gold</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">los</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">los</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">los</span> <span class="o">*</span> <span class="n">mask</span><span class="p">)</span> <span class="o">/</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">los</span>
+
+
+<span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="n">conf</span><span class="p">):</span>
+    <span class="n">device</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">device</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">CasRel</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="c1"># 因为本次模型借助BERT做fine_tuning， 因此需要对模型中的大部分参数进行L2正则处理防止过拟合，包括权重w和偏置b</span>
+    <span class="c1"># prepare optimzier</span>
+    <span class="c1"># named_parameters()获取模型中的参数和参数名字</span>
+    <span class="n">param_optimizer</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;param_optimizer---&gt;</span><span class="si">{</span><span class="n">param_optimizer</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">no_decay</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;bias&quot;</span><span class="p">,</span> <span class="s2">&quot;LayerNorm.bias&quot;</span><span class="p">,</span> <span class="s2">&quot;LayerNorm.weight&quot;</span><span class="p">]</span>  <span class="c1"># no_decay中存放不进行权重衰减的参数{因为bert官方代码对这三项免于正则化}</span>
+    <span class="c1"># any()函数用于判断给定的可迭代参数iterable是否全部为False，则返回False，如果有一个为True，则返回True</span>
+    <span class="c1"># 判断param_optimizer中所有的参数。如果不在no_decay中，则进行权重衰减;如果在no_decay中，则不进行权重衰减</span>
+    <span class="n">optimizer_grouped_parameters</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">param_optimizer</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">nd</span> <span class="ow">in</span> <span class="n">n</span> <span class="k">for</span> <span class="n">nd</span> <span class="ow">in</span> <span class="n">no_decay</span><span class="p">)],</span> <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">param_optimizer</span> <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">nd</span> <span class="ow">in</span> <span class="n">n</span> <span class="k">for</span> <span class="n">nd</span> <span class="ow">in</span> <span class="n">no_decay</span><span class="p">)],</span> <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}]</span>
+
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">AdamW</span><span class="p">(</span><span class="n">optimizer_grouped_parameters</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">learning_rate</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">10e-8</span><span class="p">)</span>
+    <span class="c1"># 是否需要对bert进行warm_up。这里默认不进行</span>
+    <span class="n">sheduler</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">sheduler</span><span class="p">,</span> <span class="n">device</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">conf</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+    <span class="c1"># casrel = CasRel(conf)</span>
+    <span class="c1"># print(f&#39;模型的架构---&gt;{casrel}&#39;)</span>
+    <span class="n">load_model</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h4 id="_3">第二步: 编写工具类函数,训练函数,验证函数,测试函数<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
+<ul>
+<li>注意：工具类函数需要在训练、测试、评估过程中使用；训练函数, 验证函数两者在一个脚本，测试函数单独一个脚本. 此外, 因为验证函数和测试函数一致，因此只写一个即可.</li>
+</ul>
+<hr />
+<ul>
+<li>第一步: 实现utils函数.</li>
+<li>代码路径: /home/ec2-user/Casrel_RE/relationship_extract/codes/utils/process.py</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># coding:utf-8</span>
+<span class="kn">from</span> <span class="nn">codes.config</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">choice</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="n">conf</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">extract_sub</span><span class="p">(</span><span class="n">pred_sub_heads</span><span class="p">,</span> <span class="n">pred_sub_tails</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    :param pred_sub_heads: 模型预测出的主实体开头位置</span>
+<span class="sd">    :param pred_sub_tails: 模型预测出的主实体尾部位置</span>
+<span class="sd">    :return: subs列表里面对应的所有实体【head, tail】</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">subs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># 统计预测出所有值为1的元素索引位置</span>
+    <span class="n">heads</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pred_sub_heads</span><span class="p">),</span> <span class="n">device</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">device</span><span class="p">)[</span><span class="n">pred_sub_heads</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">tails</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pred_sub_tails</span><span class="p">),</span> <span class="n">device</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">device</span><span class="p">)[</span><span class="n">pred_sub_tails</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">head</span><span class="p">,</span> <span class="n">tail</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">heads</span><span class="p">,</span> <span class="n">tails</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">tail</span> <span class="o">&gt;=</span> <span class="n">head</span><span class="p">:</span>
+            <span class="n">subs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">head</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="n">tail</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
+    <span class="k">return</span> <span class="n">subs</span>
+
+
+<span class="k">def</span> <span class="nf">extract_obj_and_rel</span><span class="p">(</span><span class="n">obj_heads</span><span class="p">,</span> <span class="n">obj_tails</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+
+<span class="sd">    :param obj_heads:  模型预测出的从实体开头位置以及关系类型</span>
+<span class="sd">    :param obj_tails:  模型预测出的从实体尾部位置以及关系类型</span>
+<span class="sd">    :return: obj_and_rels：元素形状：(rel_index, start_index, end_index)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">obj_heads</span> <span class="o">=</span> <span class="n">obj_heads</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">obj_tails</span> <span class="o">=</span> <span class="n">obj_tails</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">rel_count</span> <span class="o">=</span> <span class="n">obj_heads</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">obj_and_rels</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">rel_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rel_count</span><span class="p">):</span>
+        <span class="n">obj_head</span> <span class="o">=</span> <span class="n">obj_heads</span><span class="p">[</span><span class="n">rel_index</span><span class="p">]</span>
+        <span class="n">obj_tail</span> <span class="o">=</span> <span class="n">obj_tails</span><span class="p">[</span><span class="n">rel_index</span><span class="p">]</span>
+        <span class="n">objs</span> <span class="o">=</span> <span class="n">extract_sub</span><span class="p">(</span><span class="n">obj_head</span><span class="p">,</span> <span class="n">obj_tail</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">objs</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">:</span>
+                <span class="n">start_index</span><span class="p">,</span> <span class="n">end_index</span> <span class="o">=</span> <span class="n">obj</span>
+                <span class="n">obj_and_rels</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">rel_index</span><span class="p">,</span> <span class="n">start_index</span><span class="p">,</span> <span class="n">end_index</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">obj_and_rels</span>
+
+
+<span class="k">def</span> <span class="nf">convert_score_to_zero_one</span><span class="p">(</span><span class="n">tensor</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    以0.5为阈值，大于0.5的设置为1，小于0.5的设置为0</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">tensor</span><span class="p">[</span><span class="n">tensor</span> <span class="o">&gt;=</span> <span class="mf">0.5</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">tensor</span><span class="p">[</span><span class="n">tensor</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">tensor</span>
+</code></pre></div>
+<hr />
+<ul>
+<li>导入实现训练函数,验证函数,测试函数的工具包</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># coding:utf-8</span>
+
+<span class="kn">from</span> <span class="nn">model.CasrelModel</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">utils.process</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">utils.data_loader</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">config</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+</code></pre></div>
+<hr />
+<ul>
+<li>第二步: 编写训练与验证函数.</li>
+<li>代码路径: /home/ec2-user/Casrel_RE/relationship_extract/codes/train.py</li>
+<li>注意: 验证函数的目的是在训练过程中，保存F1值最好的模型状态，因此嵌套在训练过程中</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">model2train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">train_iter</span><span class="p">,</span> <span class="n">dev_iter</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">conf</span><span class="p">):</span>
+    <span class="n">epochs</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">epochs</span>
+    <span class="n">best_triple_f1</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+        <span class="n">train_epoch</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">train_iter</span><span class="p">,</span> <span class="n">dev_iter</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">best_triple_f1</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="s1">&#39;../save_model/last_model.pth&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">train_epoch</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">train_iter</span><span class="p">,</span> <span class="n">dev_iter</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">best_triple_f1</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tqdm</span><span class="p">(</span><span class="n">train_iter</span><span class="p">)):</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+        <span class="n">logist</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">compute_loss</span><span class="p">(</span><span class="o">**</span><span class="n">logist</span><span class="p">,</span> <span class="o">**</span><span class="n">labels</span><span class="p">)</span>
+
+        <span class="n">model</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">step</span> <span class="o">%</span> <span class="mi">1500</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> 
+                       <span class="s1">&#39;../save_model/epoch_</span><span class="si">%s</span><span class="s1">_model_</span><span class="si">%s</span><span class="s1">.pth&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">step</span><span class="p">))</span>         
+            <span class="n">results</span> <span class="o">=</span> <span class="n">model2dev</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">dev_iter</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">best_triple_f1</span><span class="p">:</span>
+                <span class="n">best_triple_f1</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="s1">&#39;../save_model/best_f1.pth&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;epoch:</span><span class="si">{}</span><span class="s1">,&#39;</span>
+                      <span class="s1">&#39;step:</span><span class="si">{}</span><span class="s1">,&#39;</span>
+                      <span class="s1">&#39;sub_precision:</span><span class="si">{:.4f}</span><span class="s1">, &#39;</span>
+                      <span class="s1">&#39;sub_recall:</span><span class="si">{:.4f}</span><span class="s1">, &#39;</span>
+                      <span class="s1">&#39;sub_f1:</span><span class="si">{:.4f}</span><span class="s1">, &#39;</span>
+                      <span class="s1">&#39;triple_precision:</span><span class="si">{:.4f}</span><span class="s1">, &#39;</span>
+                      <span class="s1">&#39;triple_recall:</span><span class="si">{:.4f}</span><span class="s1">, &#39;</span>
+                      <span class="s1">&#39;triple_f1:</span><span class="si">{:.4f}</span><span class="s1">,&#39;</span>
+                      <span class="s1">&#39;train loss:</span><span class="si">{:.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span>
+                                                 <span class="n">step</span><span class="p">,</span>
+                                                 <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                                 <span class="n">results</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                                 <span class="n">results</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                                                 <span class="n">results</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                                                 <span class="n">results</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
+                                                 <span class="n">results</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span>
+                                                 <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
+
+    <span class="k">return</span> <span class="n">best_triple_f1</span>
+</code></pre></div>
+<hr />
+<ul>
+<li>第三步: 编写验证函数.</li>
+<li>代码路径: /home/ec2-user/Casrel_RE/relationship_extract/codes/train.py</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">model2dev</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">dev_iter</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    验证模型效果</span>
+<span class="sd">    :param model:</span>
+<span class="sd">    :param dev_iter:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="c1"># 定义一个df，来展示模型的指标。</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;TP&#39;</span><span class="p">,</span> <span class="s1">&#39;PRED&#39;</span><span class="p">,</span> <span class="s2">&quot;REAL&quot;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;f1&#39;</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;sub&#39;</span><span class="p">,</span> <span class="s1">&#39;triple&#39;</span><span class="p">])</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">labels</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">dev_iter</span><span class="p">):</span>
+        <span class="n">logist</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="n">pred_sub_heads</span> <span class="o">=</span> <span class="n">convert_score_to_zero_one</span><span class="p">(</span><span class="n">logist</span><span class="p">[</span><span class="s1">&#39;pred_sub_heads&#39;</span><span class="p">])</span>
+        <span class="n">pred_sub_tails</span> <span class="o">=</span> <span class="n">convert_score_to_zero_one</span><span class="p">(</span><span class="n">logist</span><span class="p">[</span><span class="s1">&#39;pred_sub_tails&#39;</span><span class="p">])</span>
+        <span class="n">sub_heads</span> <span class="o">=</span> <span class="n">convert_score_to_zero_one</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="s1">&#39;sub_heads&#39;</span><span class="p">])</span>
+        <span class="n">sub_tails</span> <span class="o">=</span> <span class="n">convert_score_to_zero_one</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="s1">&#39;sub_tails&#39;</span><span class="p">])</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;input_ids&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">obj_heads</span> <span class="o">=</span> <span class="n">convert_score_to_zero_one</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="s1">&#39;obj_heads&#39;</span><span class="p">])</span>
+        <span class="n">obj_tails</span> <span class="o">=</span> <span class="n">convert_score_to_zero_one</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="s1">&#39;obj_tails&#39;</span><span class="p">])</span>
+        <span class="n">pred_obj_heads</span> <span class="o">=</span> <span class="n">convert_score_to_zero_one</span><span class="p">(</span><span class="n">logist</span><span class="p">[</span><span class="s1">&#39;pred_obj_heads&#39;</span><span class="p">])</span>
+        <span class="n">pred_obj_tails</span> <span class="o">=</span> <span class="n">convert_score_to_zero_one</span><span class="p">(</span><span class="n">logist</span><span class="p">[</span><span class="s1">&#39;pred_obj_tails&#39;</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">batch_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">batch_size</span><span class="p">):</span>
+
+            <span class="n">pred_subs</span> <span class="o">=</span> <span class="n">extract_sub</span><span class="p">(</span><span class="n">pred_sub_heads</span><span class="p">[</span><span class="n">batch_index</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(),</span> 
+                                    <span class="n">pred_sub_tails</span><span class="p">[</span><span class="n">batch_index</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">())</span>
+
+            <span class="n">true_subs</span> <span class="o">=</span> <span class="n">extract_sub</span><span class="p">(</span><span class="n">sub_heads</span><span class="p">[</span><span class="n">batch_index</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(),</span> 
+                                    <span class="n">sub_tails</span><span class="p">[</span><span class="n">batch_index</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">())</span>
+
+            <span class="n">pred_ojbs</span> <span class="o">=</span> <span class="n">extract_obj_and_rel</span><span class="p">(</span><span class="n">pred_obj_heads</span><span class="p">[</span><span class="n">batch_index</span><span class="p">],</span>
+                                            <span class="n">pred_obj_tails</span><span class="p">[</span><span class="n">batch_index</span><span class="p">])</span>
+
+            <span class="n">true_objs</span> <span class="o">=</span> <span class="n">extract_obj_and_rel</span><span class="p">(</span><span class="n">obj_heads</span><span class="p">[</span><span class="n">batch_index</span><span class="p">],</span> 
+                                            <span class="n">obj_tails</span><span class="p">[</span><span class="n">batch_index</span><span class="p">])</span>
+
+            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;PRED&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pred_subs</span><span class="p">)</span>
+            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;REAL&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">true_subs</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">true_sub</span> <span class="ow">in</span> <span class="n">true_subs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">true_sub</span> <span class="ow">in</span> <span class="n">pred_subs</span><span class="p">:</span>
+                    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;TP&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;PRED&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pred_ojbs</span><span class="p">)</span>
+            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;REAL&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">true_objs</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">true_obj</span> <span class="ow">in</span> <span class="n">true_objs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">true_obj</span> <span class="ow">in</span> <span class="n">pred_ojbs</span><span class="p">:</span>
+                    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;TP&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;sub&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;TP&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;PRED&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;sub&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;TP&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;REAL&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;sub&#39;</span><span class="p">,</span> <span class="s1">&#39;f1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">+</span>
+                                                                 <span class="n">df</span><span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">+</span> 
+                                                                 <span class="mf">1e-9</span><span class="p">)</span>
+    <span class="n">sub_precision</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;TP&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;PRED&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">)</span>
+    <span class="n">sub_recall</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;TP&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;REAL&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">)</span>
+    <span class="n">sub_f1</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sub_precision</span> <span class="o">*</span> <span class="n">sub_recall</span> <span class="o">/</span> <span class="p">(</span><span class="n">sub_precision</span> <span class="o">+</span> <span class="n">sub_recall</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">)</span>
+
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;triple&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;TP&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;PRED&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;triple&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;TP&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;REAL&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;triple&#39;</span><span class="p">,</span> <span class="s1">&#39;f1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span>
+            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">)</span>
+
+    <span class="n">triple_precision</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;TP&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;PRED&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">)</span>
+    <span class="n">triple_recall</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;TP&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;REAL&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">)</span>
+    <span class="n">triple_f1</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">triple_precision</span> <span class="o">*</span> <span class="n">triple_recall</span> <span class="o">/</span> <span class="p">(</span>
+            <span class="n">triple_precision</span> <span class="o">+</span> <span class="n">triple_recall</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">sub_precision</span><span class="p">,</span> <span class="n">sub_recall</span><span class="p">,</span> <span class="n">sub_f1</span><span class="p">,</span> <span class="n">triple_precision</span><span class="p">,</span> <span class="n">triple_recall</span><span class="p">,</span> <span class="n">triple_f1</span><span class="p">,</span> <span class="n">df</span>
+</code></pre></div>
+<hr />
+<ul>
+<li>第四步: 编写测试函数.</li>
+<li>代码路径：/home/ec2-user/Casrel_RE/relationship_extract/codes/test.py</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">model2test</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">test_iter</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    测试模型效果</span>
+<span class="sd">    :param model:</span>
+<span class="sd">    :param test_iter:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="c1"># 定义一个df，来展示模型的指标。</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;TP&#39;</span><span class="p">,</span> <span class="s1">&#39;PRED&#39;</span><span class="p">,</span> <span class="s2">&quot;REAL&quot;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;f1&#39;</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;sub&#39;</span><span class="p">,</span> <span class="s1">&#39;triple&#39;</span><span class="p">])</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">labels</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">test_iter</span><span class="p">):</span>
+            <span class="n">logist</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">inputs</span><span class="p">)</span>
+            <span class="n">pred_sub_heads</span> <span class="o">=</span> <span class="n">convert_score_to_zero_one</span><span class="p">(</span><span class="n">logist</span><span class="p">[</span><span class="s1">&#39;pred_sub_heads&#39;</span><span class="p">])</span>
+            <span class="n">pred_sub_tails</span> <span class="o">=</span> <span class="n">convert_score_to_zero_one</span><span class="p">(</span><span class="n">logist</span><span class="p">[</span><span class="s1">&#39;pred_sub_tails&#39;</span><span class="p">])</span>
+            <span class="n">sub_heads</span> <span class="o">=</span> <span class="n">convert_score_to_zero_one</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="s1">&#39;sub_heads&#39;</span><span class="p">])</span>
+            <span class="n">sub_tails</span> <span class="o">=</span> <span class="n">convert_score_to_zero_one</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="s1">&#39;sub_tails&#39;</span><span class="p">])</span>
+            <span class="n">batch_size</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;input_ids&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">obj_heads</span> <span class="o">=</span> <span class="n">convert_score_to_zero_one</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="s1">&#39;obj_heads&#39;</span><span class="p">])</span>
+            <span class="n">obj_tails</span> <span class="o">=</span> <span class="n">convert_score_to_zero_one</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="s1">&#39;obj_tails&#39;</span><span class="p">])</span>
+            <span class="n">pred_obj_heads</span> <span class="o">=</span> <span class="n">convert_score_to_zero_one</span><span class="p">(</span><span class="n">logist</span><span class="p">[</span><span class="s1">&#39;pred_obj_heads&#39;</span><span class="p">])</span>
+            <span class="n">pred_obj_tails</span> <span class="o">=</span> <span class="n">convert_score_to_zero_one</span><span class="p">(</span><span class="n">logist</span><span class="p">[</span><span class="s1">&#39;pred_obj_tails&#39;</span><span class="p">])</span>
+
+            <span class="k">for</span> <span class="n">batch_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">batch_size</span><span class="p">):</span>
+
+                <span class="n">pred_subs</span> <span class="o">=</span> <span class="n">extract_sub</span><span class="p">(</span><span class="n">pred_sub_heads</span><span class="p">[</span><span class="n">batch_index</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(),</span>
+                                        <span class="n">pred_sub_tails</span><span class="p">[</span><span class="n">batch_index</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">())</span>
+
+                <span class="n">true_subs</span> <span class="o">=</span> <span class="n">extract_sub</span><span class="p">(</span><span class="n">sub_heads</span><span class="p">[</span><span class="n">batch_index</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(),</span> 
+                                        <span class="n">sub_tails</span><span class="p">[</span><span class="n">batch_index</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">())</span>
+
+                <span class="n">pred_ojbs</span> <span class="o">=</span> <span class="n">extract_obj_and_rel</span><span class="p">(</span><span class="n">pred_obj_heads</span><span class="p">[</span><span class="n">batch_index</span><span class="p">],</span>
+                                                <span class="n">pred_obj_tails</span><span class="p">[</span><span class="n">batch_index</span><span class="p">])</span>
+
+                <span class="n">true_objs</span> <span class="o">=</span> <span class="n">extract_obj_and_rel</span><span class="p">(</span><span class="n">obj_heads</span><span class="p">[</span><span class="n">batch_index</span><span class="p">],</span> 
+                                                <span class="n">obj_tails</span><span class="p">[</span><span class="n">batch_index</span><span class="p">])</span>
+
+                <span class="n">df</span><span class="p">[</span><span class="s1">&#39;PRED&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pred_subs</span><span class="p">)</span>
+                <span class="n">df</span><span class="p">[</span><span class="s1">&#39;REAL&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">true_subs</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">true_sub</span> <span class="ow">in</span> <span class="n">true_subs</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">true_sub</span> <span class="ow">in</span> <span class="n">pred_subs</span><span class="p">:</span>
+                        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;TP&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="n">df</span><span class="p">[</span><span class="s1">&#39;PRED&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pred_ojbs</span><span class="p">)</span>
+                <span class="n">df</span><span class="p">[</span><span class="s1">&#39;REAL&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">true_objs</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">true_obj</span> <span class="ow">in</span> <span class="n">true_objs</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">true_obj</span> <span class="ow">in</span> <span class="n">pred_ojbs</span><span class="p">:</span>
+                        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;TP&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;sub&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;TP&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;PRED&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;sub&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;TP&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;REAL&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;sub&#39;</span><span class="p">,</span> <span class="s1">&#39;f1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">][</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;triple&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;TP&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;PRED&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;triple&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;TP&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;REAL&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;triple&#39;</span><span class="p">,</span> <span class="s1">&#39;f1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span>
+                <span class="n">df</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">][</span><span class="s1">&#39;triple&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df</span>
+</code></pre></div>
+<hr />
+<h4 id="_4">第三步: 编写模型预测函数<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
+<ul>
+<li>使用训练好的模型，随机抽取文本进行关系抽取</li>
+<li>代码位置: /home/ec2-user/Casrel_RE/relationship_extract/codes/predict.py</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># coding:utf-8</span>
+<span class="kn">from</span> <span class="nn">model.CasrelModel</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">utils.process</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">conf</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="n">model_path</span><span class="p">):</span>
+    <span class="c1"># 实例化模型</span>
+    <span class="n">mymodel</span> <span class="o">=</span> <span class="n">CasRel</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">mymodel</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">model_path</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">mymodel</span>
+
+
+<span class="k">def</span> <span class="nf">get_inputs</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+    <span class="n">input_ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">text</span><span class="p">[</span><span class="s1">&#39;input_ids&#39;</span><span class="p">]])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">text</span><span class="p">[</span><span class="s1">&#39;attention_mask&#39;</span><span class="p">]])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="c1"># 初始化值</span>
+    <span class="n">seq_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">[</span><span class="s1">&#39;input_ids&#39;</span><span class="p">])</span>
+    <span class="n">inner_sub_head2tail</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">seq_len</span><span class="p">)</span>
+    <span class="n">inner_sub_len</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+    <span class="c1"># 获取模型预测的实体位置信息</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="c1"># 先利用模型获取主实体的位置信息</span>
+        <span class="n">encoded_text</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_encoded_text</span><span class="p">(</span><span class="n">input_ids</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+        <span class="n">sub_heads</span><span class="p">,</span> <span class="n">sub_tails</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_subs</span><span class="p">(</span><span class="n">encoded_text</span><span class="p">)</span>
+        <span class="n">pred_sub_heads</span> <span class="o">=</span> <span class="n">convert_score_to_zero_one</span><span class="p">(</span><span class="n">sub_heads</span><span class="p">)</span>
+        <span class="n">pred_sub_tails</span> <span class="o">=</span> <span class="n">convert_score_to_zero_one</span><span class="p">(</span><span class="n">sub_tails</span><span class="p">)</span>
+        <span class="c1"># 获取主实体索引位置信息</span>
+        <span class="n">pred_subs</span> <span class="o">=</span> <span class="n">extract_sub</span><span class="p">(</span><span class="n">pred_sub_heads</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(),</span> <span class="n">pred_sub_tails</span><span class="o">.</span><span class="n">squeeze</span><span class="p">())</span>
+        <span class="c1"># 模型可能没识别出实体</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pred_subs</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">sub_head_idx</span> <span class="o">=</span> <span class="n">pred_subs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">sub_tail_idx</span> <span class="o">=</span> <span class="n">pred_subs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># 获取主体长度以及对主体位置全部赋值为1</span>
+            <span class="n">inner_sub_head2tail</span><span class="p">[</span><span class="n">sub_head_idx</span><span class="p">:</span><span class="n">sub_tail_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">inner_sub_len</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">sub_tail_idx</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">sub_head_idx</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+    <span class="n">sub_len</span> <span class="o">=</span> <span class="n">inner_sub_len</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">sub_head2tail</span> <span class="o">=</span> <span class="n">inner_sub_head2tail</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;input_ids&#39;</span><span class="p">:</span> <span class="n">input_ids</span><span class="p">,</span>
+              <span class="s1">&#39;mask&#39;</span><span class="p">:</span> <span class="n">mask</span><span class="p">,</span>
+              <span class="s1">&#39;sub_head2tail&#39;</span><span class="p">:</span> <span class="n">sub_head2tail</span><span class="p">,</span>
+              <span class="s1">&#39;sub_len&#39;</span><span class="p">:</span> <span class="n">sub_len</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">model</span>
+
+
+<span class="k">def</span> <span class="nf">model2predict</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">rel_dict_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="k">as</span> <span class="n">fr</span><span class="p">:</span>
+        <span class="n">rel_id2word</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fr</span><span class="p">)</span>
+    <span class="n">inputs</span><span class="p">,</span> <span class="n">model</span> <span class="o">=</span> <span class="n">get_inputs</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+    <span class="n">logist</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">inputs</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;logist[&#39;pred_sub_heads&#39;]--&gt;</span><span class="si">{</span><span class="n">logist</span><span class="p">[</span><span class="s1">&#39;pred_sub_heads&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;logist[&#39;pred_obj_heads&#39;]--&gt;</span><span class="si">{</span><span class="n">logist</span><span class="p">[</span><span class="s1">&#39;pred_obj_heads&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">pred_sub_heads</span> <span class="o">=</span> <span class="n">convert_score_to_zero_one</span><span class="p">(</span><span class="n">logist</span><span class="p">[</span><span class="s1">&#39;pred_sub_heads&#39;</span><span class="p">])</span>
+    <span class="n">pred_sub_tails</span> <span class="o">=</span> <span class="n">convert_score_to_zero_one</span><span class="p">(</span><span class="n">logist</span><span class="p">[</span><span class="s1">&#39;pred_sub_tails&#39;</span><span class="p">])</span>
+    <span class="n">pred_obj_heads</span> <span class="o">=</span> <span class="n">convert_score_to_zero_one</span><span class="p">(</span><span class="n">logist</span><span class="p">[</span><span class="s1">&#39;pred_obj_heads&#39;</span><span class="p">])</span>
+    <span class="n">pred_obj_tails</span> <span class="o">=</span> <span class="n">convert_score_to_zero_one</span><span class="p">(</span><span class="n">logist</span><span class="p">[</span><span class="s1">&#39;pred_obj_tails&#39;</span><span class="p">])</span>
+    <span class="n">new_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">spo_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">ids</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;input_ids&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">text_list</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+    <span class="n">sentence</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text_list</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">pred_subs</span> <span class="o">=</span> <span class="n">extract_sub</span><span class="p">(</span><span class="n">pred_sub_heads</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(),</span> <span class="n">pred_sub_tails</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">())</span>
+    <span class="n">pred_objs</span> <span class="o">=</span> <span class="n">extract_obj_and_rel</span><span class="p">(</span><span class="n">pred_obj_heads</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pred_obj_tails</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pred_subs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">pred_objs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;没有识别出结果&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pred_objs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">pred_subs</span><span class="p">):</span>
+        <span class="n">pred_subs</span> <span class="o">=</span> <span class="n">pred_subs</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">pred_objs</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">sub</span><span class="p">,</span> <span class="n">rel_obj</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pred_subs</span><span class="p">,</span> <span class="n">pred_objs</span><span class="p">):</span>
+        <span class="n">sub_spo</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">sub_head</span><span class="p">,</span> <span class="n">sub_tail</span> <span class="o">=</span> <span class="n">sub</span>
+        <span class="n">sub</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text_list</span><span class="p">[</span><span class="n">sub_head</span><span class="p">:</span> <span class="n">sub_tail</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;[PAD]&#39;</span> <span class="ow">in</span> <span class="n">sub</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">sub_spo</span><span class="p">[</span><span class="s1">&#39;subject&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sub</span>
+        <span class="n">relation</span> <span class="o">=</span> <span class="n">rel_id2word</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">rel_obj</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+        <span class="n">obj_head</span><span class="p">,</span> <span class="n">obj_tail</span> <span class="o">=</span> <span class="n">rel_obj</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">rel_obj</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text_list</span><span class="p">[</span><span class="n">obj_head</span><span class="p">:</span> <span class="n">obj_tail</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;[PAD]&#39;</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">sub_spo</span><span class="p">[</span><span class="s1">&#39;predicate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">relation</span>
+        <span class="n">sub_spo</span><span class="p">[</span><span class="s1">&#39;object&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span>
+        <span class="n">spo_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sub_spo</span><span class="p">)</span>
+    <span class="n">new_dict</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sentence</span>
+    <span class="n">new_dict</span><span class="p">[</span><span class="s1">&#39;spo_list&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spo_list</span>
+    <span class="k">return</span> <span class="n">new_dict</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">sample</span> <span class="o">=</span> <span class="s2">&quot;《人间》是王菲演唱歌曲&quot;</span>
+    <span class="n">model_path</span> <span class="o">=</span> <span class="s1">&#39;../save_model/last_model.pth&#39;</span>
+    <span class="n">mymodel</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span>
+    <span class="n">model2predict</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">mymodel</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<ul>
+<li>调用:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span> /home/Desktop/relationship_extract/codes/
+<span class="c1"># 实现模型训练</span>
+python train.py
+</code></pre></div>
+<hr />
+<ul>
+<li>输出结果:</li>
+</ul>
+<div align=center><img src="../img/4-4-1.png" style="zoom:50%" ><img/></div>
+
+<hr />
+<blockquote>
+<ul>
+<li>结论: Casrel模型在训练集上的表现是F1: 72.7%</li>
+</ul>
+</blockquote>
+<hr />
+<h3 id="_5">小节总结<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
+<ul>
+<li>本小节实现了基于Casrel模型的构建, 并完成了训练和测试评估.</li>
+</ul>
+<hr />
+<hr />
+<hr />
+<hr />
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="页脚" >
+      
+        
+        <a href="03-Casrel%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E4%BB%8B%E7%BB%8D.html" class="md-footer__link md-footer__link--prev" aria-label="上一页: 4.3 Casrel模型的数据处理" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              4.3 Casrel模型的数据处理
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../%E7%AC%AC%E4%BA%94%E7%AB%A0%EF%BC%9A%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%83%A8%E7%BD%B2%E4%B8%8E%E6%80%BB%E7%BB%93/01-%E6%A8%A1%E5%9E%8BAPI%E6%8E%A5%E5%8F%A3%E5%AE%9E%E7%8E%B0.html" class="md-footer__link md-footer__link--next" aria-label="下一页: 5.1 模型API接口实现" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              5.1 模型API接口实现
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\s\\-\uff0c\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.5a2dcb6a.min.js"></script>
+      
+        <script src="../js/extra.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+    
+    
+  </body>
+</html>

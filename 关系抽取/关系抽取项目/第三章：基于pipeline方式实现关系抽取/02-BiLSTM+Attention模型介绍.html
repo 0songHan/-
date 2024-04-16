@@ -1,0 +1,900 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../img/AI.jpg">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
+    
+    
+      
+        <title>3.2 BiLSTM+Attention模型架构解析 - 泛娱乐数据关系抽取项目</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.975780f9.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.2505c338.min.css">
+        
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="None" data-md-color-accent="None">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#bilstmattention" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="泛娱乐数据关系抽取项目" class="md-header__button md-logo" aria-label="泛娱乐数据关系抽取项目" data-md-component="logo">
+      
+  <img src="../img/AI.jpg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            泛娱乐数据关系抽取项目
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              3.2 BiLSTM+Attention模型架构解析
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="泛娱乐数据关系抽取项目" class="md-nav__button md-logo" aria-label="泛娱乐数据关系抽取项目" data-md-component="logo">
+      
+  <img src="../img/AI.jpg" alt="logo">
+
+    </a>
+    泛娱乐数据关系抽取项目
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          第一章:关系抽取项目简介
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第一章:关系抽取项目简介" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          第一章:关系抽取项目简介
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96%E9%A1%B9%E7%9B%AE%E7%AE%80%E4%BB%8B/01-%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96%E9%A1%B9%E7%9B%AE%E8%83%8C%E6%99%AF%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        1.1 项目背景介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96%E9%A1%B9%E7%9B%AE%E7%AE%80%E4%BB%8B/02-%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        1.2 关系抽取的基本知识
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          第二章:基于规则方式实现关系抽取
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第二章:基于规则方式实现关系抽取" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          第二章:基于规则方式实现关系抽取
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8E%E8%A7%84%E5%88%99%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/01-%E8%A7%84%E5%88%99%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        2.1 关系抽取的规则方法介绍
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          第三章:基于pipeline方式实现关系抽取
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第三章:基于pipeline方式实现关系抽取" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          第三章:基于pipeline方式实现关系抽取
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="01-pipeline%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        3.1 关系抽取的pipeline方法介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          3.2 BiLSTM+Attention模型架构解析
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="02-BiLSTM%2BAttention%E6%A8%A1%E5%9E%8B%E4%BB%8B%E7%BB%8D.html" class="md-nav__link md-nav__link--active">
+        3.2 BiLSTM+Attention模型架构解析
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bilstmattention" class="md-nav__link">
+    BiLSTM+Attention模型介绍
+  </a>
+  
+    <nav class="md-nav" aria-label="BiLSTM+Attention模型介绍">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    学习目标
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bilstmattention_1" class="md-nav__link">
+    BiLSTM+Attention算法思想
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bilstmattention_2" class="md-nav__link">
+    BiLSTM+Attention模型架构
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    小结总结:
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="03-BILSTM%2BAttention%E6%A8%A1%E5%9E%8B%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86.html" class="md-nav__link">
+        3.3 BiLSTM+Attention模型的数据预处理
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="04-BILSTM%2BAttention%E6%A8%A1%E5%9E%8B%E5%AE%9E%E7%8E%B0%E4%B8%8E%E8%AE%AD%E7%BB%83.html" class="md-nav__link">
+        3.4 BiLSTM+Attention模型的搭建与训练
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          第四章:基于joint方式实现关系抽取
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第四章:基于joint方式实现关系抽取" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          第四章:基于joint方式实现关系抽取
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E5%9B%9B%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8Ejoint%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/01-joint%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        4.1 关系抽取的joint方法介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E5%9B%9B%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8Ejoint%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/02-Casrel%E6%A8%A1%E5%9E%8B%E6%9E%B6%E6%9E%84.html" class="md-nav__link">
+        4.2 Casrel模型架构解析
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E5%9B%9B%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8Ejoint%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/03-Casrel%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        4.3 Casrel模型的数据处理
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E5%9B%9B%E7%AB%A0%EF%BC%9A%E5%9F%BA%E4%BA%8Ejoint%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/04-Casrel%E6%A8%A1%E5%9E%8B%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%E4%B8%8E%E8%AE%AD%E7%BB%83.html" class="md-nav__link">
+        4.4 Casrel模型搭建与训练
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          第五章:模型的部署与总结
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第五章:模型的部署与总结" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          第五章:模型的部署与总结
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%BA%94%E7%AB%A0%EF%BC%9A%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%83%A8%E7%BD%B2%E4%B8%8E%E6%80%BB%E7%BB%93/01-%E6%A8%A1%E5%9E%8BAPI%E6%8E%A5%E5%8F%A3%E5%AE%9E%E7%8E%B0.html" class="md-nav__link">
+        5.1 模型API接口实现
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%BA%94%E7%AB%A0%EF%BC%9A%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%83%A8%E7%BD%B2%E4%B8%8E%E6%80%BB%E7%BB%93/02-Neo4j%E5%9B%BE%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        5.2 Neo4j图数据库的介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%AC%AC%E4%BA%94%E7%AB%A0%EF%BC%9A%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%83%A8%E7%BD%B2%E4%B8%8E%E6%80%BB%E7%BB%93/03-%E5%9F%BA%E4%BA%8ENeo4j%E5%AE%9E%E7%8E%B0%E5%A8%B1%E4%B9%90%E6%95%B0%E6%8D%AE%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E6%90%AD%E5%BB%BA.html" class="md-nav__link">
+        5.3 娱乐数据知识图谱搭建
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bilstmattention" class="md-nav__link">
+    BiLSTM+Attention模型介绍
+  </a>
+  
+    <nav class="md-nav" aria-label="BiLSTM+Attention模型介绍">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    学习目标
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bilstmattention_1" class="md-nav__link">
+    BiLSTM+Attention算法思想
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bilstmattention_2" class="md-nav__link">
+    BiLSTM+Attention模型架构
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    小结总结:
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  <h1>3.2 BiLSTM+Attention模型架构解析</h1>
+
+<h2 id="bilstmattention">BiLSTM+Attention模型介绍<a class="headerlink" href="#bilstmattention" title="Permanent link">&para;</a></h2>
+<hr />
+<h3 id="_1">学习目标<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>理解BiLSTM+Attention模型算法思想.</li>
+<li>掌握BiLSTM+Attention模型架构.</li>
+</ul>
+<hr />
+<h3 id="bilstmattention_1">BiLSTM+Attention算法思想<a class="headerlink" href="#bilstmattention_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>BiLSTM+Attention模型最初由Zhou等人在2016年的论文《Attention-Based Bidirectional Long Short-Term Memory Networks for Relation Classification》中提出. </li>
+<li>该模型结合了双向长短时记忆网络 (Bidirectional LSTM) 和注意力机制 (Attention) ，用于处理输入序列并提取关系信息. 该模型并被应用于关系分类任务. </li>
+</ul>
+<hr />
+<h3 id="bilstmattention_2">BiLSTM+Attention模型架构<a class="headerlink" href="#bilstmattention_2" title="Permanent link">&para;</a></h3>
+<div align=center><img src="../img/3-2-1.png" style="zoom:80%" ><img/></div>
+
+<hr />
+<ul>
+<li>
+<p>基于上图模型架构所示: BiLSTM+Attention模型整体分为五个部分: </p>
+<ul>
+<li>输入层 (Input Layer) : 输入的是句子，可以是字符序列也可以是单词序列，或者两者相结合. 此外，对于句子中的两个实体，分别计算各个字符相对于实体的位置. 比如有如下样本: </li>
+</ul>
+<blockquote>
+<div class="highlight"><pre><span></span><code>文本描述: “在《逃学威龙》这部电影中周星驰和吴孟达联合出演”
+在这个样本中，实体1为周星驰，实体2为吴孟达. 关系为合作关系. 对于第一个字符“在”字来说，其相对于实体1的距离为: “在”字在字符序列中的索引-实体1在字符序列中的索引. 相对于实体2的距离为: “在”字在字符序列中的索引-实体2在字符序列中的索引. 
+因此，模型的输入为子序列+字符的相对位置编码
+</code></pre></div>
+</blockquote>
+<ul>
+<li>词嵌入层 (Embedding Layer) : 将每个单词映射到一个高维向量表示，包括: 字符或词嵌入以及相对位置编码的嵌入，可以使用预训练的词向量或从头开始训练. </li>
+</ul>
+<ul>
+<li>双向LSTM层 (BiLSTM Layer) : LSTM是一种递归神经网络，它可以对序列数据进行建模，用于从句子中提取特征. BiLSTM是一种双向LSTM，它能够同时捕捉上下文信息，包括前向和后向信息，因此在关系抽取任务中得到了广泛应用. </li>
+</ul>
+<ul>
+<li>
+<p>注意力机制层 (Attention Layer) : 注意力机制可以让模型集中注意力于关键词或片段，有助于提高模型的性能. 这里注意力机制被用来确定每个句子中的单词对于关系分类的重要性. 具体来说，对于输入句子中的每个单词，注意力机制会为其分配一个权重，表示该单词对于关系分类的重要程度. 这些权重将被用于加权输入句子中每个单词的表示，以计算关系分类的输出. 本次注意力机制的实现是采用的基于注意力权重的加权平均池化方式. </p>
+<ul>
+<li>
+<p>具体实现方式如下: </p>
+<ul>
+<li>第一步: 将 BiLSTM 网络的输出 <span class="arithmatex"><span class="MathJax_Preview">H​</span><script type="math/tex">H​</script></span> 经过一个 <span class="arithmatex"><span class="MathJax_Preview">tanh​</span><script type="math/tex">tanh​</script></span> 激活函数，得到一个矩阵<span class="arithmatex"><span class="MathJax_Preview">M​</span><script type="math/tex">M​</script></span></li>
+</ul>
+<div class="arithmatex">
+<div class="MathJax_Preview">
+M = tanh(H)
+</div>
+<script type="math/tex; mode=display">
+M = tanh(H)
+</script>
+</div>
+<ul>
+<li>第二步: 将 <span class="arithmatex"><span class="MathJax_Preview">M​</span><script type="math/tex">M​</script></span> 作为输入，通过权重向量 <span class="arithmatex"><span class="MathJax_Preview">w^T​</span><script type="math/tex">w^T​</script></span> 和一个 softmax 函数，计算每个单词对于关系分类的重要程度，得到的结果是一个权重向量 <span class="arithmatex"><span class="MathJax_Preview">α​</span><script type="math/tex">α​</script></span> .</li>
+</ul>
+<div class="arithmatex">
+<div class="MathJax_Preview">
+α = softmax(w^T*M)
+</div>
+<script type="math/tex; mode=display">
+α = softmax(w^T*M)
+</script>
+</div>
+<ul>
+<li>第三步: 将BiLSTM网络的输出 <span class="arithmatex"><span class="MathJax_Preview">H</span><script type="math/tex">H</script></span> 和注意力权重 <span class="arithmatex"><span class="MathJax_Preview">α</span><script type="math/tex">α</script></span> 相乘得到一个加权和 <span class="arithmatex"><span class="MathJax_Preview">r</span><script type="math/tex">r</script></span></li>
+</ul>
+<div class="arithmatex">
+<div class="MathJax_Preview">
+r = H * α^T
+</div>
+<script type="math/tex; mode=display">
+r = H * α^T
+</script>
+</div>
+<ul>
+<li>第四步: 将第三步得到的结果 <span class="arithmatex"><span class="MathJax_Preview">r</span><script type="math/tex">r</script></span> ，经过一个 <span class="arithmatex"><span class="MathJax_Preview">tanh​</span><script type="math/tex">tanh​</script></span> 激活函数，得到最终加权后的输入句子中每个单词的表示，以方便后续计算关系分类的输出</li>
+</ul>
+</li>
+</ul>
+<div class="arithmatex">
+<div class="MathJax_Preview">
+h^* = tanh(r)
+</div>
+<script type="math/tex; mode=display">
+h^* = tanh(r)
+</script>
+</div>
+</li>
+</ul>
+<ul>
+<li>输出层 (Output Layer) : 根据任务的不同，输出层可以是分类层或回归层. 在关系抽取任务中，输出层通常是一个分类层，用于预测两个实体之间的关系类型. </li>
+</ul>
+</li>
+</ul>
+<hr />
+<h3 id="_2">小结总结:<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p>BiLSTM+Attention算法思想</p>
+<ul>
+<li>由Zhou等人在2016年的论文《Attention-Based Bidirectional Long Short-Term Memory Networks for Relation Classification》中提出</li>
+<li>该模型并被应用于关系分类任务. </li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>
+<p>BiLSTM+Attention模型架构</p>
+<ul>
+<li>输入层 (Input Layer) : 输入的是句子，可以是字符序列也可以是单词序列，或者两者相结合. 此外，对于句子中的两个实体，分别计算各个字符相对于实体的位置. </li>
+</ul>
+<ul>
+<li>词嵌入层 (Embedding Layer) : 将每个单词映射到一个高维向量表示</li>
+<li>双向LSTM层 (BiLSTM Layer) : LSTM是一种递归神经网络，它可以对序列数据进行建模，用于从句子中提取特征. </li>
+<li>注意力机制层 (Attention Layer) : 注意力机制可以让模型集中注意力于关键词或片段，有助于提高模型的性能. </li>
+<li>输出层 (Output Layer) : 在关系抽取任务中，输出层通常是一个分类层，用于预测两个实体之间的关系类型. </li>
+</ul>
+</li>
+</ul>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="页脚" >
+      
+        
+        <a href="01-pipeline%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D.html" class="md-footer__link md-footer__link--prev" aria-label="上一页: 3.1 关系抽取的pipeline方法介绍" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              3.1 关系抽取的pipeline方法介绍
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="03-BILSTM%2BAttention%E6%A8%A1%E5%9E%8B%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86.html" class="md-footer__link md-footer__link--next" aria-label="下一页: 3.3 BiLSTM+Attention模型的数据预处理" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              3.3 BiLSTM+Attention模型的数据预处理
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\s\\-\uff0c\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.5a2dcb6a.min.js"></script>
+      
+        <script src="../js/extra.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+    
+    
+  </body>
+</html>
